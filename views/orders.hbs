@@ -1,0 +1,54 @@
+{{> user-header}}
+
+<div class="card shadow-lg m-4 animate__animated animate__fadeInUp">
+  <h5 class="card-header bg-primary text-white">Order Details</h5>
+  {{#each orders}}
+  <div class="card-body">
+    <h5 class="card-title">{{this.name}}</h5>
+    <p class="card-text"><strong>Email:</strong> {{this.email}}</p>
+    <p class="card-text"><strong>Phone:</strong> {{this.phone}}</p>
+    <p class="card-text"><strong>Transaction ID:</strong> {{this.orderId}}</p>
+    <a href="/order-details/{{this._id}}" class="btn btn-primary mt-3 shadow-sm">View Details</a>
+    <hr style="width: 100%; 
+               height: 1px;">
+  </div>
+  {{/each}}
+</div>
+
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.navbar {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.1);
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.animate__animated {
+  animation-duration: 0.8s;
+}
+</style>

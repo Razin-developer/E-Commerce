@@ -1,0 +1,115 @@
+<section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="card">
+          <div class="card-body p-4">
+            <div class="row">
+              <div class="col-lg-7">
+                <h5 class="mb-3">
+                  <a href="/" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping</a>
+                </h5>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div>
+                    <p class="mb-1">Shopping cart</p>
+                    <p class="mb-0">You have {{count}} items in your cart</p>
+                  </div>
+                </div>
+                {{#each cart}}
+                <div class="card mb-3">
+                <div class="card-body">
+  <div class="row align-items-center">
+    <!-- Product Image and Details -->
+    <div class="col-12 col-md-6 d-flex flex-row align-items-center mb-3 mb-md-0">
+      <div>
+        <img src="/images/products/{{this._id}}.jpg" class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
+      </div>
+      <div class="ms-3">
+        <h5>{{this.name}}</h5>
+        <p class="small mb-0">{{this.des}}</p>
+      </div>
+    </div>
+
+    <!-- Quantity Controls and Price -->
+    <div class="col-12 col-md-4 d-flex flex-row align-items-center justify-content-md-between justify-content-center mb-3 mb-md-0">
+      <div class="align-items-center" style="width: 100px; display: flex;">
+        <button class="btn btn-danger" onclick="updateQuantity('{{this._id}}', '{{../user._id}}', -1)">-</button>
+        <h5 class="fw-normal p-2 mb-0 quantity" id="quantity-{{this._id}}" style="font-size:20px;">{{this.quantity}}</h5>
+        <button class="btn btn-info" onclick="updateQuantity('{{this._id}}', '{{../user._id}}', 1)">+</button>
+      </div>
+      <div style="width: 80px;" class="text-center">
+        <h5 id="price-{{this._id}}" class="mb-0 price">${{this.price}}</h5>
+      </div>
+    </div>
+
+    <!-- Delete Button -->
+    <div class="col-12 col-md-2 text-md-start text-center">
+      <a href="/delete/{{this._id}}/{{../user._id}}" class="btn btn-danger">Delete</a>
+    </div>
+  </div>
+</div>
+                </div>
+                {{/each}}
+              </div>
+              <button type="button" class="btn Checkout-btn btn-info btn-block btn-lg">
+                <div class="d-flex justify-content-between">
+                  <span class="total-price">${{total}}</span>
+                  <span><a href="/place-order">Place order </a><i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function updateQuantity(prodId, userId, quantity) {
+  if (!userId) {
+    window.location.href = '/login';
+    return;
+  }
+
+  console.log(`Sending request to update quantity for product ${prodId} for user ${userId}`);
+
+  fetch(`/change-quantity/${prodId}/${userId}/${quantity}`, {
+    method: 'GET',
+  })
+    .then(response => response.json())
+    .then(res => {
+      console.log('AJAX response:', res);
+      if (res.status) {
+        if (!res.delete) {
+          // Update the quantity dynamically
+          const quantityElem = document.getElementById(`quantity-${prodId}`);
+          quantityElem.textContent = res.quantity; // Update quantity
+
+          // Update the total price
+          let totalPrice = 0;
+          const priceElems = document.querySelectorAll('.price');
+          const quantityElems = document.querySelectorAll('.quantity');
+          
+          priceElems.forEach((priceElem, index) => {
+            const price = parseFloat(priceElem.textContent.replace('$', '')); // Extract numeric price
+            const quantity = parseInt(quantityElems[index].textContent); // Extract numeric quantity
+            totalPrice += price * quantity; // Calculate total
+          });
+
+          // Update total price display
+          document.querySelector('.total-price').textContent = `$${totalPrice.toFixed(2)}`;
+        } else {
+          // Reload the page if the item is deleted
+          location.reload();
+        }
+      } else {
+        console.error('Error in response:', res.error);
+      }
+    })
+    .catch(err => {
+      console.error('Error in AJAX request:', err);
+    });
+}
+</script>
