@@ -1,0 +1,103 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">E-Commerce</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {{#if user}}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">{{user.name}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cart">
+              <button type="button" class="btn btn-primary">
+                Cart
+                {{#if count}}
+                <span class="badge bg-light text-dark" id="count">{{count}}</span>
+                {{else}}
+                <span class="badge bg-light text-dark" id="count">0</span>
+                {{/if}}
+              </button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="/orders">Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Log Out</a>
+          </li>
+          {{else}}
+               <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Log In</a>
+          </li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="container py-5">
+  <div class="row g-4">
+    {{#each products}}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100">
+        <img src="/images/products/{{this._id}}.jpg" class="card-img-top img-user" alt="{{this.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{this.name}}</h5>
+          <p class="card-text">{{this.des}}</p>
+          <p class="card-text text-danger">{{this.price}}</p>
+          <p style="visibility: hidden;"
+          id="added-{{this._id}}"class="card-text text-success">Added</p>
+          <button class="btn btn-primary" onclick="addToCart('{{this._id}}', '{{../user._id}}')">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<script>
+  function addToCart(prodId, userId) {
+    if (!userId) {
+      window.location.href = '/login'
+      return;
+    }
+    console.log(`Sending request to add product ${prodId} to cart for user ${userId}`);
+    
+    fetch(`/add-to-cart/${prodId}/${userId}`, {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then(res => {
+      console.log('AJAX response:', res);
+      if (res.status) {
+        const countElem = document.getElementById('count');
+        if (countElem) {
+          let count = parseInt(countElem.innerHTML) || 0;
+          count += 1;
+          countElem.innerHTML = count;
+        }
+        const added = document.querySelector('#added-'+prodId)
+        added.style.visibility = 'visible'
+        setTimeout(() => {
+          added.style.visibility = 'hidden'
+        }, 3000)
+      } else {
+        console.error('Error in response:', res.error);
+      }
+    })
+    .catch(err => {
+      console.error('Error in AJAX request:', err);
+    });
+  }
+</script>

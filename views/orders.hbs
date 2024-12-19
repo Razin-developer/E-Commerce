@@ -1,0 +1,100 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">E-Commerce</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {{#if user}}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">{{user.name}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cart">
+              <button type="button" class="btn btn-primary">
+                Cart
+                {{#if count}}
+                <span class="badge bg-light text-dark" id="count">{{count}}</span>
+                {{else}}
+                <span class="badge bg-light text-dark" id="count">0</span>
+                {{/if}}
+              </button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="/orders">Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Log Out</a>
+          </li>
+          {{else}}
+               <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Log In</a>
+          </li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="card shadow-lg m-4 animate__animated animate__fadeInUp">
+  <h5 class="card-header bg-primary text-white">Order Details</h5>
+  {{#each orders}}
+  <div class="card-body">
+    <h5 class="card-title">{{this.name}}</h5>
+    <p class="card-text"><strong>Email:</strong> {{this.email}}</p>
+    <p class="card-text"><strong>Phone:</strong> {{this.phone}}</p>
+    <p class="card-text"><strong>Transaction ID:</strong> {{this.orderId}}</p>
+    <a href="/order-details/{{this._id}}" class="btn btn-primary mt-3 shadow-sm">View Details</a>
+    <hr style="width: 100%; 
+               height: 1px;">
+  </div>
+  {{/each}}
+</div>
+
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.navbar {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.1);
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.animate__animated {
+  animation-duration: 0.8s;
+}
+</style>
