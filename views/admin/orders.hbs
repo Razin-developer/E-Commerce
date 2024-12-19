@@ -1,0 +1,36 @@
+{{!-- Admin Home Page --}}
+{{> admin-header}}
+
+<div class="container p-4">
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Address</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each order}}
+        <tr>
+          <th scope="row">&middot;</th>
+          <td>{{this.name}}</td>
+          <td>{{this.address}}</td>
+          <td>{{this.phone}}</td>
+          <td>
+            <a href="/admin-order-details/{{this._id}}" class="btn btn-primary btn-sm">View Details</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-light text-center py-3">
+  <p>&copy; 2024 Admin Panel | Designed with ❤️</p>
+</footer>

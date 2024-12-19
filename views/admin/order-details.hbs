@@ -1,0 +1,190 @@
+{{> admin-header}}
+
+
+<div class="container my-4 fade-in">
+  <h1 class="text-center">Order Details</h1>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Name:</strong> {{order.name}}</li>
+    <li class="list-group-item"><strong>Email:</strong> {{order.email}}</li>
+    <li class="list-group-item"><strong>Phone:</strong> {{order.phone}}</li>
+    <li class="list-group-item"><strong>Address:</strong> {{order.address}}, {{order.city}}, {{order.country}}, {{order.pincode}}</li>
+    <li class="list-group-item"><strong>Date:</strong> {{order.date}}</li>
+    <li class="list-group-item"><strong>Products:</strong><br>
+    <div class="container py-5">
+      <div class="row g-4">
+        {{#each order.prod}}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card h-100">
+            <img src="/images/products/{{this._id}}.jpg" class="card-img-top img-admin" alt="{{this.name}}">
+            <div class="card-body">
+              <h5 class="card-title">{{this.name}}</h5>
+              <p class="card-text">{{this.des}}</p>
+              <p class="card-text text-danger">{{this.price}}</p>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+</div>
+    </li>
+    <li class="list-group-item"><strong>Progress:</strong> <br>
+        {{#if none}}
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="received" required /> Received
+          </label><br>
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="shipped" required /> Shipped
+          </label><br>
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="deliveried" required /> Deliveried
+          </label>
+        {{/if}}
+        {{#if received}}
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="received" required checked/> Received
+          </label><br>
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="shipped" required /> Shipped
+          </label><br>
+          <label class="mx-4 mt-2">
+            <input type="radio" name="progress" value="deliveried" required /> Deliveried
+          </label>
+        {{/if}}
+        {{#if shipped}}
+          <label class="mx-4 mt-2">
+            <input type="radio" name="progress" value="received" required /> Received
+          </label><br>
+          <label class="mx-4 mt-2">
+            <input type="radio" name="progress" value="shipped" required checked /> Shipped
+          </label><br>
+          <label class="mx-4 mt-2">
+            <input type="radio" name="progress" value="deliveried" required /> Deliveried
+          </label>
+        {{/if}}
+        {{#if deliveried}}
+          <label class="mx-4 mt-2">
+            <input type="radio" name="progress" value="received" required /> Received
+          </label><br>
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="shipped" required /> Shipped
+          </label><br>
+          <label class="ml-4 mt-2">
+            <input type="radio" name="progress" value="deliveried" checked required /> Deliveried
+          </label>
+        {{/if}}
+    </li>
+    <li class="list-group-item"><strong>Payment Method:</strong> {{order.how}}</li>
+    <li class="list-group-item"><strong>Status:</strong> {{order.what}}</li>
+  </ul>
+<!-- Button to trigger the updateOrder function -->
+<button onclick="updateOrder('{{order._id}}')" class="btn btn-primary mt-3">Update Order</button>
+
+<button onclick="deleteOrder('{{order._id}}')" class="btn btn-danger mt-3">Delete Order</button>
+
+<a href="/admin-orders" class="btn btn-secondary mt-3">Back to Orders</a>
+</div>
+
+<script>
+  function updateOrder(orderId) {
+    // Get the progress value (assumes an input element with name='progress' exists)
+    let progress = document.querySelector('[name="progress"]:checked')?.value;
+    // Check if progress value exists
+    if (progress) {
+      // Use jQuery AJAX to send the data
+      $.ajax({
+        url: `/admin-update-order/${orderId}`, // Server endpoint
+        method: 'POST', // HTTP method
+        data: { progress }, // Data to send (wrapped in an object)
+        success: (response) => {
+          // Handle successful response
+          if (response.status) {
+            location.href = `/admin-order-details/${orderId}`;
+          }
+        },
+        error: (err) => {
+          // Handle error
+          alert('An error occurred: ' + err.responseText);
+        }
+      });
+    } else {
+      alert('Progress value is not defined. Please ensure the progress input exists.');
+    }
+  }
+  function deleteOrder(orderId) {
+    // Get the progress value (assumes an input element with name='progress' exists)
+    let dataSend = { id: orderId}
+    let con =  confirm('Are you sure ?')
+    // Check if progress value exists
+    if (dataSend && con) {
+      // Use jQuery AJAX to send the data
+      $.ajax({
+        url: `/admin-delete-order/${orderId}`, // Server endpoint
+        method: 'POST', // HTTP method
+        data: dataSend, // Data to send (wrapped in an object)
+        success: (response) => {
+          // Handle successful response
+          if (response.status) {
+            location.href = `/admin-orders`;
+          }
+        },
+        error: (err) => {
+          // Handle error
+          alert('An error occurred: ' + err.responseText);
+        }
+      });
+    } else {
+      if (!dataSend) {
+      alert('Progress value is not defined. Please ensure the progress input exists.');
+      }
+    }
+  }
+</script>  
+
+<style>
+  /* Add a smooth fade-in animation */
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Define the fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Add animation for list items */
+.list-group-item {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Optional: Button animation on hover */
+.btn {
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.img-admin {
+  width: auto;
+  height: 200px;
+}
+</style>
