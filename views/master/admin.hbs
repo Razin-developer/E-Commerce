@@ -1,0 +1,38 @@
+{{> header}}
+
+<div class="container mt-5">
+  <!-- Welcome Section -->
+  <div class="text-center mb-5">
+    <a href="/master-delete-all-admin" class="btn btn-danger btn-lg mt-4">Delete All Admin</a>
+  </div>
+</div>
+
+<!-- Responsive Table Section -->
+<div class="p-5">
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Password</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each admins}}
+        <tr>
+          <th scope="row">&middot;</th>
+          <td>{{this.name}}</td>
+          <td>{{this.email}}</td>
+          <td>{{this.password}}</td>
+          <td>
+            <a href="/delete-admin/{{this._id}}" class="btn btn-danger">Delete</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+{{> header}}
+
+<div class="container mt-5">
+  <!-- Welcome Section -->
+  <div class="text-center mb-5">
+    <a href="/master-delete-all-product" class="btn btn-danger btn-lg mt-4">Delete All Products</a>
+  </div>
+</div>
+
+<!-- Responsive Table Section -->
+<div class="p-5">
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Category</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <th scope="row">&middot;</th>
+          <td>{{this.name}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.category}}</td>
+          <td>{{this.des}}</td>
+          <td><img class="checkout-img" src="/images/products/{{this._id}}.jpg" alt="Product Image" style="max-width: 50px;"></td>
+          <td>
+            <a href="/master-edit-product/{{this._id}}/{{this.admin}}" class="btn btn-primary">Edit</a>
+          </td>
+          <td>
+            <a href="/master-delete-product/{{this._id}}/{{this.admin}}" class="btn btn-danger">Delete</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

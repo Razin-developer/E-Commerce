@@ -1,0 +1,78 @@
+{{> header}}
+
+<div class="container py-5">
+  <div class="row g-4">
+    {{#each cart}}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100">
+        <img src="/images/products/{{this._id}}.jpg" class="card-img-top img-user" alt="{{this.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{this.name}}</h5>
+          <p class="card-text">{{this.des}}</p>
+          <p class="card-text price text-danger">{{this.price}}</p>
+          <p class="
+          
+          
+          " style="display: flex;">
+         <button class="btn btn-danger" onclick="updateQuantity('{{this._id}}', '{{../user}}', -1)">-</button>
+        <h5 class="fw-normal p-2 mb-0 quantity" id="quantity-{{this._id}}" style="font-size:20px;">{{this.quantity}}</h5>
+        <button class="btn btn-info" onclick="updateQuantity('{{this._id}}', '{{../user}}', 1)">+</button></p>
+          <a class="btn btn-primary"href="/delete-one-cart/{{this._id}}/{{../user}}">Delete</a>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<footer class="bg-dark text-light text-center py-3">
+  <p>Total: <span class="total-price">{{total}}</span></p>
+  <a href="/master-cart">Go back</a>
+</footer>
+
+<script>
+  function updateQuantity(prodId, userId, quantity) {
+  if (!userId) {
+    window.location.href = '/login';
+    return;
+  }
+
+  console.log(`Sending request to update quantity for product ${prodId} for user ${userId}`);
+
+  fetch(`/change-quantity/${prodId}/${userId}/${quantity}`, {
+    method: 'GET',
+  })
+    .then(response => response.json())
+    .then(res => {
+      console.log('AJAX response:', res);
+      if (res.status) {
+        if (!res.delete) {
+          // Update the quantity dynamically
+          const quantityElem = document.getElementById(`quantity-${prodId}`);
+          quantityElem.textContent = res.quantity; // Update quantity
+
+          // Update the total price
+          let totalPrice = 0;
+          const priceElems = document.querySelectorAll('.price');
+          const quantityElems = document.querySelectorAll('.quantity');
+          priceElems.forEach((priceElem, index) => {
+            const price = parseFloat(priceElem.textContent.replace('$', '')); // Extract numeric price
+            const quantity = parseInt(quantityElems[index].textContent); // Extract numeric quantity
+            totalPrice += price * quantity; // Calculate total
+          });
+
+          // Update total price display
+          document.querySelector('.total-price').textContent = `$${totalPrice.toFixed(2)}`;
+        } else {
+          // Reload the page if the item is deleted
+          location.reload();
+        }
+      } else {
+        console.error('Error in response:', res.error);
+      }
+    })
+    .catch(err => {
+      console.error('Error in AJAX request:', err);
+    });
+}
+</script>
